@@ -1,3 +1,4 @@
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count
@@ -5,7 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView
 from taggit.models import Tag
 
-from .forms import EmailPostForm, CommentForm
+from .forms import EmailPostForm, CommentForm, SearchForm
 from .models import Post
 
 # class PostListView(ListView):
@@ -34,7 +35,7 @@ def post_list(request, tag_slug=None):
         # Если номер страницы больше, чем общее количество страниц, возвращаем последнюю.
         posts = paginator.page(paginator.num_pages)
     return render(request, 'blog/post/list.html', {'posts': posts,
-                                                    'page': page,
+                                                   'page': page,
                                                    'tag': tag})
 
 
@@ -88,3 +89,23 @@ def post_share(request, post_id):
         form = EmailPostForm()
     return render(request, 'blog/post/share.html',
                   {'post': post, 'form': form, 'sent': sent})
+
+
+def post_search(request):
+    form = SearchForm()
+    query = None
+    results = []
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+    if form.is_valid():
+        query = form.cleaned_data['query']
+        # search_vector = SearchVector('title', weight='A') + SearchVector('body', weight='B')
+        # search_query = SearchQuery(query)
+        # results = Post.objects.annotate(search=search_vector,
+        #                                 rank=SearchRank(search_vector, search_query)
+        #                                 ).filter(search=search_query).order_by('-rank')
+        results = Post.objects.annotate(similarity=TrigramSimilarity('title', query)
+                                        ).filter(similarity__gt=0.3).order_by('-similarity')
+    return render(request, 'blog/post/search.html', {'form': form,
+                                                     'query': query,
+                                                     'results': results})
