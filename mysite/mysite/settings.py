@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-4ejdo!@sv_ugo8x0@^=py(1*1e3e03joute$gky*y#0fg9yi*6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 SITE_ID = 1
 
@@ -83,14 +83,25 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'blog',
+#         'USER': 'blog',
+#         'PASSWORD': 'blog',
+#         'PORT': '5432',
+#         'HOST': 'localhost'
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'blog',
-        'USER': 'blog',
-        'PASSWORD': 'blog',
-        'PORT': '5432',
-        'HOST': 'localhost'
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'kuma',
+        'PORT': 5432,
+        'HOST': 'db'
     }
 }
 
@@ -140,6 +151,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'thefresh.friends.software@gmail.com'
-EMAIL_HOST_PASSWORD = 'jmcilujnfirmdwhc'
+EMAIL_HOST_PASSWORD = 'gfnxkmeooujsvqrf'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
